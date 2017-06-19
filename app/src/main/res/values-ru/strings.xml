@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Телефоны сотрудников</string>
+    <string name="app_logIn_text">Даная программа позволит Вам просмотреть номера телефонов сотрудников и позвонить им. Надеюсь это поможет Вам экономить время на поиск нужного номера телефона</string>
+    <string name="button_text">Старт</string>
+</resources>

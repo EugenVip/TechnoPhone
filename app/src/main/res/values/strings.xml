@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">TechnotorgPhone</string>
+    <string name="app_logIn_text">anyText</string>
+    <string name="button_text">Start</string>
+    <string name="textSearchHint" translatable="false">Search</string>
+    <string name="textNameEmployee" translatable="false">NameEmployee</string>
+
+</resources>
