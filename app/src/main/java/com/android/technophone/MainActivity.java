@@ -6,9 +6,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.RequiresPermission;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -19,9 +22,11 @@ import java.util.ArrayList;
  * Created by User on 15.06.2017.
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<Employee>> {
 
+    public int numberLoader = 0;
     private EmployeeRecycleAdapter mEmployeeRecycleAdapter;
+    private RecyclerView recyclerView;
 
     //@SdkConstant(SdkConstantType.ACTIVITY_INTENT_ACTION)
     @RequiresPermission(Manifest.permission.CALL_PHONE)
@@ -31,8 +36,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final ArrayList<Employee> arr_employees = createArray();
-
+        //final ArrayList<Employee> arr_employees = createArray();
 
         /*ListView linearLayout = (ListView) findViewById(R.id.employee_list);
         EmployeeAdapter adapter = new EmployeeAdapter(this, arr_employees);
@@ -56,12 +60,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
 
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.employee_recyclerView);
+        recyclerView = (RecyclerView) findViewById(R.id.employee_recyclerView);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        mEmployeeRecycleAdapter = new EmployeeRecycleAdapter(this, arr_employees);
+        mEmployeeRecycleAdapter = new EmployeeRecycleAdapter(this, null);
+        recyclerView.setAdapter(mEmployeeRecycleAdapter);
+
         mEmployeeRecycleAdapter.setClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,7 +84,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        recyclerView.setAdapter(mEmployeeRecycleAdapter);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                Log.i("Test Scroll", ""+newState);
+
+                if(newState == 1) {
+                    if(mEmployeeRecycleAdapter.getItemCount() == -1 || mEmployeeRecycleAdapter.getItemCount() == 0 ){
+                        getSupportLoaderManager().restartLoader(numberLoader, null, MainActivity.this).forceLoad();
+                    }
+                }
+            }
+        } );
 
         SearchView searchView = (SearchView) findViewById(R.id.searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -91,33 +110,27 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
     }
 
-    private void initData(){
+    @Override
+    public Loader<ArrayList<Employee>> onCreateLoader(int id, Bundle args) {
+        Log.i("TestLoaderCreate", ""+mEmployeeRecycleAdapter.getItemCount());
 
-        final ArrayList<Employee> arr_employees = createArray();
-
+        return new EmployeeLoader(getBaseContext());
     }
 
-    private ArrayList<Employee> createArray(){
+    @Override
+    public void onLoadFinished(Loader<ArrayList<Employee>> loader, ArrayList<Employee> data) {
 
-        final ArrayList<Employee> arr_employees = new ArrayList<Employee>();
+        mEmployeeRecycleAdapter.mFilteredList=(data);
+        mEmployeeRecycleAdapter.notifyDataSetChanged();
+        Log.i("TestLoaderFinished", ""+mEmployeeRecycleAdapter.getItemCount());
+    }
 
-        for (int i=1; i<200; i++) {
-            arr_employees.add(new Employee(""+i, "+38050"+i));
-            /*arr_employees.add(new Employee("two", "+38067"));
-            arr_employees.add(new Employee("three", "+38073"));
-            arr_employees.add(new Employee("one1", "+38050"));
-            arr_employees.add(new Employee("two2", "+38067"));
-            arr_employees.add(new Employee("three3", "+38073"));
-            arr_employees.add(new Employee("one4", "+38050"));
-            arr_employees.add(new Employee("two5", "+38067"));
-            arr_employees.add(new Employee("three6", "+38073"));
-            arr_employees.add(new Employee("one7", "+38050"));
-            arr_employees.add(new Employee("two8", "+38067"));
-            arr_employees.add(new Employee("three9", "+38073"));*/
-        }
-        return arr_employees;
+    @Override
+    public void onLoaderReset(Loader<ArrayList<Employee>> loader) {
+        mEmployeeRecycleAdapter.mFilteredList=(new ArrayList<Employee>());
+        Log.i("TestLoaderReset", ""+mEmployeeRecycleAdapter.getItemCount());
+
     }
 }

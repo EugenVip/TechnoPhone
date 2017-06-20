@@ -59,7 +59,10 @@ public class EmployeeRecycleAdapter extends RecyclerView.Adapter<EmployeeRecycle
     @Override
     public int getItemCount() {
         //Log.i("DAtaTest", ""+mFilteredList.size());
-        return mFilteredList.size();
+        if (mFilteredList==null){
+            return -1;
+        }else {
+        return mFilteredList.size();}
     }
 
     @Override
