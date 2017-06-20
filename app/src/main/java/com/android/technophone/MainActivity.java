@@ -1,12 +1,17 @@
 package com.android.technophone;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.RequiresPermission;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -51,21 +56,34 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.employee_recyclerView);
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.employee_recyclerView);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
         mEmployeeRecycleAdapter = new EmployeeRecycleAdapter(this, arr_employees);
+        mEmployeeRecycleAdapter.setClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int pos = recyclerView.indexOfChild(v);
+                //Toast.makeText(getBaseContext(), ""+mEmployeeRecycleAdapter.mFilteredList.get(pos), Toast.LENGTH_SHORT).show();
+                Intent intentCall = new Intent(Intent.ACTION_CALL);
+                intentCall.setData(Uri.parse("tel:"+mEmployeeRecycleAdapter.mFilteredList.get(pos).getmPhoneNumber()));
+
+                try {
+                    startActivity(intentCall);
+                }catch (ActivityNotFoundException activityException){
+                    Toast.makeText(getBaseContext(), "Не удалось позвонить", Toast.LENGTH_LONG);
+                }
+            }
+        });
+
         recyclerView.setAdapter(mEmployeeRecycleAdapter);
 
         SearchView searchView = (SearchView) findViewById(R.id.searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-
-                return false;
-            }
+            public boolean onQueryTextSubmit(String query) {return false;}
 
             @Override
             public boolean onQueryTextChange(String newText) {

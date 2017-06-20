@@ -10,7 +10,10 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
+import java.security.AccessControlContext;
 import java.util.ArrayList;
+
+import static java.security.AccessController.getContext;
 
 /**
  * Created by User on 16.06.2017.
@@ -19,7 +22,8 @@ import java.util.ArrayList;
 public class EmployeeRecycleAdapter extends RecyclerView.Adapter<EmployeeRecycleAdapter.ViewHolder> implements Filterable{
 
     private ArrayList<Employee> mArrayList;
-    private ArrayList<Employee> mFilteredList;
+    public ArrayList<Employee> mFilteredList;
+    private static View.OnClickListener mClickListener;
 
     public EmployeeRecycleAdapter(Context context, ArrayList<Employee> records) {
         mArrayList = records;
@@ -32,7 +36,15 @@ public class EmployeeRecycleAdapter extends RecyclerView.Adapter<EmployeeRecycle
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.employee_view, viewGroup, false);
-        return new ViewHolder(v);
+        EmployeeRecycleAdapter.ViewHolder holder = new EmployeeRecycleAdapter.ViewHolder(v);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mClickListener.onClick(view);
+                //Log.i("TestClick", ""+mClickListener.onClick(view);toString());
+            }
+        });
+        return holder;
     }
 
     /**
@@ -92,11 +104,25 @@ public class EmployeeRecycleAdapter extends RecyclerView.Adapter<EmployeeRecycle
         };
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tv_name;
+        private AccessControlContext mContext;
+
         public ViewHolder(View view) {
             super(view);
+            mContext = getContext();
             tv_name = (TextView)view.findViewById(R.id.textViewEmployee);
+            /*tv_name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mClickListener.onClick(view);
+                    //Log.i("TestClick", ""+mClickListener.onClick(view);toString());
+                }
+            });*/
         }
     }
-}
+
+    public void setClickListener(View.OnClickListener callback) {
+        mClickListener = callback;
+    }
+ }
