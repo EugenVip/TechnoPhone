@@ -1,33 +1,47 @@
 package com.android.technophone;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.TextView;
-
-import java.security.AccessControlContext;
-import java.util.ArrayList;
-
-import static java.security.AccessController.getContext;
 
 /**
  * Created by User on 16.06.2017.
  */
 
-public class EmployeeRecycleAdapter extends RecyclerView.Adapter<EmployeeRecycleAdapter.ViewHolder> implements Filterable{
+public class EmployeeRecycleAdapter extends RecyclerViewCursorAdapter<EmployeeRecycleAdapter.ViewHolder>{
 
-    private ArrayList<Employee> mArrayList;
-    public ArrayList<Employee> mFilteredList;
     private static View.OnClickListener mClickListener;
+    private Cursor mCursor;
+    private Context mContext;
 
-    public EmployeeRecycleAdapter(Context context, ArrayList<Employee> records) {
-        mArrayList = records;
-        mFilteredList = records;
+    public EmployeeRecycleAdapter(Context context, Cursor cursor) {
+        super(context, cursor);
+        Log.d("EmployeeRecycleAdapter", ""+cursor);
+        mCursor = cursor;
+        mContext = context;
+    }
+
+    @Override
+    public Cursor runQueryOnBackgroundThread(CharSequence constraint)
+    {
+
+        try {
+            DBHelper dbHelper = new DBHelper(mContext);
+            SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+            Cursor cursor = db.rawQuery("SELECT * FROM EmployeePhone WHERE (PhoneNumber Like '%"+constraint+"%' ) or (NameEmployee Like '%"+constraint+"%' )", null);
+            return cursor;
+        }catch (NullPointerException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -37,6 +51,7 @@ public class EmployeeRecycleAdapter extends RecyclerView.Adapter<EmployeeRecycle
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.employee_view, viewGroup, false);
         EmployeeRecycleAdapter.ViewHolder holder = new EmployeeRecycleAdapter.ViewHolder(v);
+        //Log.d("onCreateViewHolder", ""+holder.getPosition());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,70 +66,22 @@ public class EmployeeRecycleAdapter extends RecyclerView.Adapter<EmployeeRecycle
      * Заполнение виджетов View данными из элемента списка с номером i
      */
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
 
-        viewHolder.tv_name.setText(mFilteredList.get(i).toString());
-    }
-
-    @Override
-    public int getItemCount() {
-        //Log.i("DAtaTest", ""+mFilteredList.size());
-        if (mFilteredList==null){
-            return -1;
-        }else {
-        return mFilteredList.size();}
-    }
-
-    @Override
-    public Filter getFilter() {
-
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence charSequence) {
-
-                String charString = charSequence.toString();
-
-                if (charString.isEmpty()) {
-
-                    mFilteredList = mArrayList;
-                    Log.i("FilterTest", "empty filter. "+mArrayList.size());
-                } else {
-
-                    Log.i("FilterTest", "charString "+charString);
-                    ArrayList<Employee> filteredList = new ArrayList<>();
-
-                    for (Employee employee : mArrayList) {
-
-                        if (employee.getmPhoneNumber().toLowerCase().contains(charString) || employee.getmNameEmployee().toLowerCase().contains(charString) ) {
-
-                            filteredList.add(employee);
-                        }
-                    }
-
-                    mFilteredList = filteredList;
-                }
-
-                FilterResults filterResults = new FilterResults();
-                filterResults.values = mFilteredList;
-                return filterResults;
-            }
-
-            @Override
-            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                mFilteredList = (ArrayList<Employee>) filterResults.values;
-                notifyDataSetChanged();
-            }
-        };
+        //Log.d("onBindViewHolder", ""+cursor);
+        viewHolder.tv_name.setText(cursor.getString(1));
+        viewHolder.tv_phone.setText(cursor.getString(2));
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tv_name;
-        private AccessControlContext mContext;
+        private TextView tv_phone;
 
         public ViewHolder(View view) {
             super(view);
-            mContext = getContext();
+            Log.i("ViewHolder", "");
             tv_name = (TextView)view.findViewById(R.id.textViewEmployee);
+            tv_phone = (TextView)view.findViewById(R.id.textViewPhoneNumber);
             /*tv_name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -128,4 +95,5 @@ public class EmployeeRecycleAdapter extends RecyclerView.Adapter<EmployeeRecycle
     public void setClickListener(View.OnClickListener callback) {
         mClickListener = callback;
     }
- }
+
+}

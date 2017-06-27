@@ -4,5 +4,6 @@
     <string name="button_text">Start</string>
     <string name="textSearchHint" translatable="false">Search</string>
     <string name="textNameEmployee" translatable="false">NameEmployee</string>
+    <string name="textCantCall">Cant Call</string>
 
 </resources>
