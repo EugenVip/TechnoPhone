@@ -10,10 +10,9 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 /**
  * Created by User on 15.06.2017.
@@ -29,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         //final ArrayList<Employee> arr_employees = createArray();
 
@@ -61,11 +61,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         mEmployeeRecycleAdapter = new EmployeeRecycleAdapter(this, null);
 
-        mEmployeeRecycleAdapter.setClickListener(new View.OnClickListener() {
+        mEmployeeRecycleAdapter.setClickListener( new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 int pos = recyclerView.getChildPosition(v);
-                //Toast.makeText(getBaseContext(), ""+mEmployeeRecycleAdapter.mFilteredList.get(pos), Toast.LENGTH_SHORT).show();
                 Intent intentCall = new Intent(Intent.ACTION_CALL);
 
                 Cursor cursor = mEmployeeRecycleAdapter.getCursor();
@@ -114,14 +114,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.i("TestLoaderCreate", ""+mEmployeeRecycleAdapter.getItemCount());
+        //Log.i("TestLoaderCreate", ""+mEmployeeRecycleAdapter.getItemCount());
 
         return new EmployeeLoader(this, "");
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Cursor cursor = ((EmployeeRecycleAdapter) recyclerView.getAdapter()).getCursor();
+        //Cursor cursor = ((EmployeeRecycleAdapter) recyclerView.getAdapter()).getCursor();
         mEmployeeRecycleAdapter.swapCursor(data);
     }
 
@@ -129,3 +129,4 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onLoaderReset(Loader<Cursor> loader) {
     }
 }
+

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="soapServer">http://1c.technotorg.com/phones/ws/returnPhones.1cws</string>
+    <string name="soapService">soapService</string>
+    <integer name="soapTimeOut">100</integer>
+    <string name="soapUser">wsUser</string>
+    <string name="soapPass">wsUser</string>
+</resources>

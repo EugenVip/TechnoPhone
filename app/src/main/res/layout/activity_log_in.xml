@@ -18,6 +18,21 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp" />
 
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:id="@+id/spinner"
+        android:paddingLeft="16dp"
+        android:background="@drawable/customborder" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:id="@+id/wsParam_Password"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp" />
+
     <TextView
         android:text="@string/button_text"
         android:layout_width="match_parent"

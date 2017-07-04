@@ -62,7 +62,7 @@ public class EmployeeLoader extends AsyncTaskLoader<Cursor> {
         }
         dbHelper.close();
         return arr_employees;*/
-        dbHelper.close();
+
         return cursor;
     }
 

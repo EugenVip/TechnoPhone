@@ -5,26 +5,27 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
+
+import java.util.ArrayList;
 
 /**
  * Created by User on 21.06.2017.
  */
 
-class DBHelper extends SQLiteOpenHelper {
+public class DBHelper extends SQLiteOpenHelper {
     private static final String DB_TABLE = "EmployeePhone";
     private SQLiteDatabase mDB;
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        Log.d("CreateDB", "---on Create BD Employee---");
+        //Log.d("CreateDB", "---on Create BD Employee---");
 
         sqLiteDatabase.execSQL("create table "+DB_TABLE+" ("
-                + "_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "_id STRING PRIMARY KEY, "
                 + "NameEmployee text, "
                 + "PhoneNumber text" + ");");
 
-        createArrayForDB(sqLiteDatabase);
+        createArrayForDB(sqLiteDatabase, null);
     }
 
     @Override
@@ -37,15 +38,25 @@ class DBHelper extends SQLiteOpenHelper {
         super(context, "Employee.db", null, 1);
     }
 
-    private void createArrayForDB(SQLiteDatabase db){
+    public void createArrayForDB(SQLiteDatabase db, ArrayList<Employee> arrayListEmployee) {
 
         ContentValues cv = new ContentValues();
 
-        for (int i=1; i<200; i++) {
-            cv.put("NameEmployee", "Name_"+i);
-            cv.put("PhoneNumber", "+38050"+i);
+        if (arrayListEmployee != null)
+        {
+            for (Employee employee: arrayListEmployee)
+            {
+                cv.put("_id", employee.getmPhoneNumber());
+                cv.put("NameEmployee", employee.getmNameEmployee());
+                cv.put("PhoneNumber", "+380"+employee.getmPhoneNumber());
 
-            db.insert(DB_TABLE, null, cv);
+                try {
+                    db.insert(DB_TABLE, null, cv);
+                }catch (Exception e){
+
+                }
+
+            }
         }
 
     }
@@ -53,4 +64,5 @@ class DBHelper extends SQLiteOpenHelper {
     public Cursor getAllData() {
         return mDB.query(DB_TABLE, null, null, null, null, null, null);
     }
+
 }
