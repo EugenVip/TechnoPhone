@@ -1,9 +1,16 @@
 <resources>
     <string name="app_name">TechnotorgPhone</string>
-    <string name="app_logIn_text">anyText</string>
+    <string name="app_logIn_text">This program for use only for employee of Technotorg LLC (Ukraine)</string>
     <string name="button_text">Start</string>
     <string name="textSearchHint" translatable="false">Search</string>
     <string name="textNameEmployee" translatable="false">NameEmployee</string>
     <string name="textCantCall">Cant Call</string>
+    <string name="textMenuRefresh">Refresh</string>
+    <string name="textMenuClose">Close</string>
+    <string name="ReturnADs" translatable="false">206715237</string>
+    <string name="textCopiedData">Data was copied.</string>
+    <string name="textNoInternet">Check Internet connections.</string>
+    <string name="textPassTrue">Password correct. Reading data from server.</string>
+    <string name="textPassFalse">Password isnt correct.</string>
 
 </resources>

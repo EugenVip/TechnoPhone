@@ -17,6 +17,7 @@ import android.widget.TextView;
 public class EmployeeRecycleAdapter extends RecyclerViewCursorAdapter<EmployeeRecycleAdapter.ViewHolder>{
 
     private static View.OnClickListener mClickListener;
+    private static View.OnLongClickListener mOnLongClickListener;
     private Cursor mCursor;
     private Context mContext;
 
@@ -35,7 +36,8 @@ public class EmployeeRecycleAdapter extends RecyclerViewCursorAdapter<EmployeeRe
             DBHelper dbHelper = new DBHelper(mContext);
             SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-            Cursor cursor = db.rawQuery("SELECT * FROM EmployeePhone WHERE (PhoneNumber Like '%"+constraint+"%' ) or (NameEmployee Like '%"+constraint+"%' )", null);
+            Cursor cursor = db.rawQuery("SELECT * FROM EmployeePhone WHERE (PhoneNumber Like '%"+constraint+"%' ) or (NameEmployeeLowerCase Like '%"+constraint+"%' ) or (NameEmployee Like '%"+constraint+"%' )", null);
+
             return cursor;
         }catch (NullPointerException e)
         {
@@ -59,6 +61,16 @@ public class EmployeeRecycleAdapter extends RecyclerViewCursorAdapter<EmployeeRe
                 //Log.i("TestClick", ""+mClickListener.onClick(view);toString());
             }
         });
+
+        v.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                //Log.i("LongClick_Holder", "just text");
+                mOnLongClickListener.onLongClick(view);
+                return true;
+            }
+        });
+
         return holder;
     }
 
@@ -94,6 +106,10 @@ public class EmployeeRecycleAdapter extends RecyclerViewCursorAdapter<EmployeeRe
 
     public void setClickListener(View.OnClickListener callback) {
         mClickListener = callback;
+    }
+
+    public void setOnLongClickListener(View.OnLongClickListener callback) {
+        mOnLongClickListener = callback;
     }
 
 }

@@ -4,9 +4,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import org.ksoap2.serialization.SoapObject;
+
 import java.util.ArrayList;
+
+import static com.android.technophone.LogInActivity.soapParam_Response;
 
 /**
  * Created by User on 21.06.2017.
@@ -23,7 +28,8 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("create table "+DB_TABLE+" ("
                 + "_id STRING PRIMARY KEY, "
                 + "NameEmployee text, "
-                + "PhoneNumber text" + ");");
+                + "PhoneNumber text,"
+                + "NameEmployeeLowerCase text " + ");");
 
         createArrayForDB(sqLiteDatabase, null);
     }
@@ -40,20 +46,21 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void createArrayForDB(SQLiteDatabase db, ArrayList<Employee> arrayListEmployee) {
 
-        ContentValues cv = new ContentValues();
-
         if (arrayListEmployee != null)
         {
+            ContentValues cv = new ContentValues();
+
             for (Employee employee: arrayListEmployee)
             {
                 cv.put("_id", employee.getmPhoneNumber());
                 cv.put("NameEmployee", employee.getmNameEmployee());
                 cv.put("PhoneNumber", "+380"+employee.getmPhoneNumber());
+                cv.put("NameEmployeeLowerCase", employee.getmNameEmployee().toLowerCase());
 
                 try {
-                    db.insert(DB_TABLE, null, cv);
-                }catch (Exception e){
-
+                    db.insertOrThrow(DB_TABLE, null, cv);
+                }catch (SQLiteException e){
+                    e.printStackTrace();
                 }
 
             }
@@ -65,4 +72,29 @@ public class DBHelper extends SQLiteOpenHelper {
         return mDB.query(DB_TABLE, null, null, null, null, null, null);
     }
 
+    public ArrayList<Employee> initialiseEmployeeData()
+    {
+        ArrayList<Employee> employeeArrayList = new ArrayList<>();
+
+        int count = soapParam_Response.getPropertyCount();
+
+        for (int i = 0; i < count; i++) {
+            SoapObject property = (SoapObject) soapParam_Response.getProperty(i);
+            //Log.i("initialiseEmploy", ""+property.toString());
+            if (property instanceof SoapObject) {
+                SoapObject info = (SoapObject) property;
+                String name = info.getProperty("FullName").toString();
+                String phone = info.getProperty("PhoneNumber").toString();
+                Employee mEmployee = new Employee(name, phone);
+                employeeArrayList.add(mEmployee);
+            }
+        }
+        return employeeArrayList;
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        this.close();
+        super.finalize();
+    }
 }

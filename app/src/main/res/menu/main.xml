@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/itemRefresh"
+
+        android:showAsAction="withText"
+        android:title="@string/textMenuRefresh"
+        android:icon="@mipmap/reload"
+        android:visible="true">
+    </item>
+    <item
+        android:id="@+id/itemClose"
+
+        android:title="@string/textMenuClose"
+        android:icon="@mipmap/cross"
+        android:showAsAction="withText">
+    </item>
+</menu>

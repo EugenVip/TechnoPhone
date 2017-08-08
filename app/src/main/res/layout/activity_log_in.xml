@@ -20,10 +20,10 @@
 
     <Spinner
         android:layout_width="match_parent"
-        android:layout_height="30dp"
         android:id="@+id/spinner"
         android:paddingLeft="16dp"
-        android:background="@drawable/customborder" />
+        style="@android:style/Widget.Spinner"
+        android:layout_height="50dp" />
 
     <EditText
         android:layout_width="match_parent"
@@ -43,7 +43,7 @@
         android:textSize="24sp"
         android:textStyle="normal|bold"
         android:background="@color/colorPrimary"
-        android:textColor="@android:color/holo_orange_light"
+        android:textColor="@android:color/holo_red_dark"
         android:layout_height="54dp"
         android:gravity="center" />
 </LinearLayout>

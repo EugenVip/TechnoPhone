@@ -27,8 +27,7 @@ public abstract class RecyclerViewCursorAdapter<VH extends RecyclerView.ViewHold
 
     public RecyclerViewCursorAdapter(Context context, Cursor cursor)
     {
-        Log.d("RecyclerViewCursorAdapt", ""+cursor);
-        //mCursor = cursor;
+        //Log.d("RecyclerViewCursorAdapt", ""+cursor);
         setHasStableIds(true);
         swapCursor(cursor);
     }
@@ -40,7 +39,7 @@ public abstract class RecyclerViewCursorAdapter<VH extends RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(VH holder, int position)
     {
-        Log.d("onBindViewHolderABS", ""+holder.getPosition());
+        //Log.d("onBindViewHolderABS", ""+holder.getPosition());
 
         if(!mDataValid){
             throw new IllegalStateException("this should only be called when the cursor is valid");
@@ -78,7 +77,7 @@ public abstract class RecyclerViewCursorAdapter<VH extends RecyclerView.ViewHold
 
     public void changeCursor(Cursor cursor)
     {
-        Log.d("changeCursor", ""+cursor);
+        //Log.d("changeCursor", ""+cursor);
         Cursor old = swapCursor(cursor);
         if(old != null){
             old.close();
@@ -87,7 +86,7 @@ public abstract class RecyclerViewCursorAdapter<VH extends RecyclerView.ViewHold
 
     public Cursor swapCursor(Cursor newCursor)
     {
-        Log.d("swapCursor", ""+newCursor);
+        //Log.d("swapCursor", ""+newCursor);
         if(newCursor == mCursor){
             return null;
         }

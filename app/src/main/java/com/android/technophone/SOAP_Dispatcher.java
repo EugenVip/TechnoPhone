@@ -1,5 +1,7 @@
 package com.android.technophone;
 
+import android.util.Log;
+
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.SoapObject;
@@ -19,6 +21,7 @@ public class SOAP_Dispatcher extends Thread {
     int ACTION;
     SoapObject soap_Response;
     final String NAMESPACE = "www.URI.com";//"ReturnPhones_XDTO";
+    String mSoapParam_URL;
 
     public SOAP_Dispatcher(int soapParam_timeout, String soapParam_URL, String soapParam_user, String soapParam_pass, int SOAP_ACTION){
         timeout = soapParam_timeout;
@@ -26,21 +29,23 @@ public class SOAP_Dispatcher extends Thread {
         user = soapParam_user;
         pass = soapParam_pass;
         ACTION = SOAP_ACTION;
+        mSoapParam_URL = soapParam_URL;
     }
 
     @Override
     public void run() {
 
-        /*switch (ACTION) {
+        switch (ACTION) {
             case LogInActivity.ACTION_GetLoginList:
                 GetLoginList();
                 break;
             case LogInActivity.ACTION_Login:
                 Login();
                 break;
-
-        }*/
-        getPhones();
+            case LogInActivity.ACTION_GetPhones:
+                getPhones();
+                break;
+        }
 
         if (soap_Response != null) {
             LogInActivity.soapParam_Response = soap_Response;
@@ -53,7 +58,7 @@ public class SOAP_Dispatcher extends Thread {
     void GetLoginList(){
 
         String method = "GetLoginList";
-        String action = NAMESPACE + "#AcceptingOrders:" + method;
+        String action = NAMESPACE + "#returnPhones:" + method;
         SoapObject request = new SoapObject(NAMESPACE, method);
         soap_Response = callWebService(request, action);
 
@@ -62,8 +67,10 @@ public class SOAP_Dispatcher extends Thread {
     void Login(){
 
         String method = "Login";
-        String action = NAMESPACE + "#AcceptingOrders:" + method;
+        String action = NAMESPACE + "#Accepting:" + method;
         SoapObject request = new SoapObject(NAMESPACE, method);
+        Log.i("TestLogin", ""+LogInActivity.wsParam_LoginID);
+        Log.i("TestLogin", ""+LogInActivity.wsParam_PassHash);
         request.addProperty("ID", LogInActivity.wsParam_LoginID);
         request.addProperty("Password", LogInActivity.wsParam_PassHash);
         soap_Response = callWebService(request, action);
@@ -71,8 +78,8 @@ public class SOAP_Dispatcher extends Thread {
     }
 
     void getPhones() {
+
         String method = "GetEmployyes";
-        //String method = "GetPhones";
         String action = NAMESPACE + "#returnPhones:" + method;
         SoapObject request = new SoapObject(NAMESPACE, method);
         soap_Response = callWebService(request, action);
@@ -87,6 +94,7 @@ public class SOAP_Dispatcher extends Thread {
         HttpTransportSE androidHttpTransport = new HttpTransportBasicAuthSE(URL, user, pass);
         androidHttpTransport.debug = true;
 
+        //Log.i("TextWebService", ""+action);
         try {
             androidHttpTransport.call(action, envelope);
             return (SoapObject) envelope.getResponse();

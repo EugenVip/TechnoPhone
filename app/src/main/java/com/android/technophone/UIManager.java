@@ -17,6 +17,6 @@ public class UIManager extends Toast {
     }
 
     public void showToast(String message){
-        Toast.makeText(mContext, message, Toast.LENGTH_SHORT);
+        Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
     }
 }
